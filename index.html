@@ -206,7 +206,11 @@
             <h2 id="contact-heading" class="contact-form-title">Say Hello</h2>
             <p class="contact-form-intro">Have questions or want to join the next cohort? Drop us a line!</p>
             
-            <form id="contact-form" action="#" method="POST" class="form-grid">
+            <form id="contact-form" action="https://formsubmit.co/tashenea.young12@gmail.com" method="POST" class="form-grid">
+              <!-- FormSubmit configuration fields -->
+              <input type="hidden" name="_subject" value="New Contact Message - Capybara Testing">
+              <input type="hidden" name="_captcha" value="false">
+              
               <div class="form-group">
                 <label for="contact-name" class="form-label">Name</label>
                 <input type="text" id="contact-name" name="name" placeholder="Your name" required class="form-input">
@@ -300,6 +304,96 @@
       <p class="footer-copyright">&copy; 2026 Capybara Testing. Designed with calm, earth-inspired tones.</p>
     </div>
   </footer>
+
+  <!-- Success Modal Overlay -->
+  <div id="success-modal" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <button id="close-modal" class="close-modal-btn" aria-label="Close message confirmation">&times;</button>
+      <div class="modal-body">
+        <div class="heart-capybara-wrapper">
+          <img src="src/assets/images/capybara_heart_1782707030448.jpg" alt="A warm flat-design illustration of a cute capybara holding a big red heart saying message received" class="success-capybara-img">
+        </div>
+        <h3 id="modal-title" class="modal-title-text">Message Received!</h3>
+        <p class="modal-desc-text">The capybara herd has successfully routed your message to <strong>tashenea.young12@gmail.com</strong>. We'll get back to you shortly!</p>
+        <button id="btn-modal-ok" class="btn btn-primary modal-ok-btn">Awesome!</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const form = this;
+      const submitBtn = document.getElementById('btn-submit-contact');
+      const originalText = submitBtn.textContent;
+      
+      // Change button state
+      submitBtn.textContent = 'Sending...';
+      submitBtn.disabled = true;
+      
+      // Grab form values
+      const name = document.getElementById('contact-name').value;
+      const email = document.getElementById('contact-email').value;
+      const message = document.getElementById('contact-message').value;
+      
+      // Submit via AJAX to FormSubmit
+      fetch('https://formsubmit.co/ajax/tashenea.young12@gmail.com', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          message: message,
+          _subject: "New Contact Message - Capybara Testing"
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Show success modal
+        const modal = document.getElementById('success-modal');
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        form.reset();
+      })
+      .catch(error => {
+        console.error('Error submitting form via AJAX:', error);
+        // Fallback: Submit standard form as fallback if AJAX fails
+        form.submit();
+      })
+      .finally(() => {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      });
+    });
+
+    // Modal closing logic
+    const closeModal = () => {
+      const modal = document.getElementById('success-modal');
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+    };
+
+    document.getElementById('close-modal').addEventListener('click', closeModal);
+    document.getElementById('btn-modal-ok').addEventListener('click', closeModal);
+    
+    // Close modal on click outside content
+    document.getElementById('success-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Close on escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
 
 </body>
 </html>
