@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capybara Testing | Beginner Coding Community</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header id="header-nav" class="navbar">
+    <div class="nav-container max-width-container">
+      <div id="brand-logo" class="brand">
+        <div class="brand-badge">C</div>
+        <span class="brand-name">Capybara Testing</span>
+      </div>
+      
+      <!-- Skip to content link for accessibility -->
+      <a href="#main-content" class="skip-link">Skip to content</a>
+
+      <!-- Navigation links -->
+      <nav aria-label="Main Navigation">
+        <ul id="nav-list" class="nav-links">
+          <li><a id="nav-link-home" href="#home" class="nav-item">Home</a></li>
+          <li><a id="nav-link-about" href="#about" class="nav-item">About</a></li>
+          <li><a id="nav-link-programs" href="#programs" class="nav-item">Programs</a></li>
+          <li><a id="nav-link-student-work" href="#student-work" class="nav-item">Student Work</a></li>
+          <li><a id="nav-link-contact" href="#contact" class="nav-item">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+      <div class="hero-container max-width-container grid-two-columns">
+        <div id="hero-content-block" class="hero-text">
+          <h1 id="hero-headline" class="hero-title"> Capybara's Codes </h1>
+          <p id="hero-subheading" class="hero-description">
+            Welcome to Capybara Testing, a friendly place where beginners can explore coding, build confidence, and learn alongside a supportive community.
+          </p>
+          <div id="hero-actions-container" class="hero-actions">
+            <a id="btn-hero-primary" href="#contact" class="btn btn-primary">Coding Starts Here</a>
+          </div>
+        </div>
+        <div id="hero-visual-block" class="hero-visual">
+          <div class="hero-image-wrapper">
+            <img id="img-hero-capybara" src="src/assets/images/hero_capybara_1782705811968.jpg" alt="A friendly illustration of a cute capybara sitting calmly next to a laptop with lines of code in soft warm earth tones" class="hero-img">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+      <div class="about-container max-width-container grid-two-columns reverse-desktop">
+        <div id="about-visual-block" class="about-visual">
+          <div class="about-image-wrapper">
+            <img id="img-about-capybara" src="src/assets/images/about_capybara_1782705824912.jpg" alt="A friendly illustration of a cute capybara relaxing in water with a pink flower on its head" class="about-img">
+          </div>
+        </div>
+        <div id="about-content-block" class="about-text">
+          <h2 id="about-heading" class="section-title">Who We Are</h2>
+          <div class="section-divider"></div>
+          <p id="about-description-1" class="about-paragraph">
+            At Capybara Testing, we believe that everyone can learn to code when given a calm, supportive, and stress-free environment. Just like the gentle capybara, our community focuses on peaceful coexistence, social connection, and collective growth.
+          </p>
+          <p id="about-description-2" class="about-paragraph">
+            Our mission is to lower the barrier to entry for beginner programmers. We replace intimidating developer jargon and high-pressure assessments with friendly guidance, step-by-step sessions, and collaborative work. Whether you want to write your first line of HTML or build a simple web app, you are welcome in our herd.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section id="programs" class="programs-section">
+      <div class="programs-container max-width-container">
+        <div class="section-header-centered">
+          <h2 id="programs-heading" class="section-title centered">Our Programs</h2>
+          <div class="section-divider centered"></div>
+          <p id="programs-subheading" class="section-subtitle">
+            Explore our tailored tracks designed specifically to support beginner coders.
+          </p>
+        </div>
+        
+        <div id="programs-grid-block" class="programs-grid grid-three-columns">
+          <!-- Card 1 -->
+          <div id="program-card-1" class="program-card">
+            <div class="program-image-container">
+              <img id="img-program-1" src="src/assets/images/program_study_1782705838614.jpg" alt="Cute capybara wearing glasses and looking at a computer screen illustration" class="program-card-img">
+            </div>
+            <div class="program-card-content">
+              <h3 id="program-title-1" class="program-card-title">1-on-1 & Group Sessions</h3>
+              <p id="program-desc-1" class="program-card-description">
+                Get personalized attention and tailored feedback in our supportive 1-on-1 sessions, or join small peer groups to practice and solve coding challenges together.
+              </p>
+            </div>
+          </div>
+          
+          <!-- Card 2 -->
+          <div id="program-card-2" class="program-card">
+            <div class="program-image-container">
+              <img id="img-program-2" src="src/assets/images/program_community_1782705850554.jpg" alt="A cute group of three capybaras sitting close together in a friendly circle illustration" class="program-card-img">
+            </div>
+            <div class="program-card-content">
+              <h3 id="program-title-2" class="program-card-title">Community Building</h3>
+              <p id="program-desc-2" class="program-card-description">
+                Participate in community meetups, social hours, and interactive Q&A roundtables. Build your professional network while making meaningful, lifelong friendships.
+              </p>
+            </div>
+          </div>
+          
+          <!-- Card 3 -->
+          <div id="program-card-3" class="program-card">
+            <div class="program-image-container">
+              <img id="img-program-3" src="src/assets/images/program_projects_1782705862768.jpg" alt="Cute capybara building a castle out of wooden blocks or working with code blocks illustration" class="program-card-img">
+            </div>
+            <div class="program-card-content">
+              <h3 id="program-title-3" class="program-card-title">Special Projects</h3>
+              <p id="program-desc-3" class="program-card-description">
+                Collaborate on simple, real-world projects that look great in a portfolio. Work on meaningful initiatives that help local nonprofits and community spaces.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Student Work Section -->
+    <section id="student-work" class="student-work-section">
+      <div class="student-work-container max-width-container">
+        <div class="section-header-centered">
+          <h2 id="testimonials-heading" class="section-title centered">Voices from the Herd</h2>
+          <div class="section-divider centered"></div>
+          <p id="testimonials-subheading" class="section-subtitle">
+            Read stories from beginners who transformed their anxiety into coding confidence.
+          </p>
+        </div>
+
+        <div id="testimonials-grid-block" class="testimonials-grid grid-three-columns">
+          <!-- Testimonial 1 -->
+          <div id="testimonial-card-1" class="testimonial-card">
+            <div class="testimonial-header">
+              <div class="avatar-wrapper">
+                <img id="img-avatar-1" src="src/assets/images/avatar_happy_1782705873882.jpg" alt="Happy capybara profile avatar" class="avatar-img">
+              </div>
+              <div class="student-info">
+                <span id="student-name-1" class="student-name">Alex M.</span>
+                <span id="student-role-1" class="student-role">Web Development Novice</span>
+              </div>
+            </div>
+            <blockquote id="testimonial-quote-1" class="testimonial-text">
+              "Found my coding home here. Everyone is so supportive and patient. I never felt silly asking 'basic' questions, and now I can comfortably build static web pages on my own!"
+            </blockquote>
+            <div id="stars-1" class="testimonial-rating" aria-label="5 star rating">★★★★★</div>
+          </div>
+
+          <!-- Testimonial 2 -->
+          <div id="testimonial-card-2" class="testimonial-card">
+            <div class="testimonial-header">
+              <div class="avatar-wrapper">
+                <img id="img-avatar-2" src="src/assets/images/avatar_sprout_1782705885217.jpg" alt="Capybara with sprout profile avatar" class="avatar-img">
+              </div>
+              <div class="student-info">
+                <span id="student-name-2" class="student-name">Sarah T.</span>
+                <span id="student-role-2" class="student-role">Career Transitioner</span>
+              </div>
+            </div>
+            <blockquote id="testimonial-quote-2" class="testimonial-text">
+              "The capybara theme makes learning so calm and relaxing. It really diffuses the stress of debugging. I love how our projects focus on helping real communities!"
+            </blockquote>
+            <div id="stars-2" class="testimonial-rating" aria-label="5 star rating">★★★★★</div>
+          </div>
+
+          <!-- Testimonial 3 -->
+          <div id="testimonial-card-3" class="testimonial-card">
+            <div class="testimonial-header">
+              <div class="avatar-wrapper">
+                <img id="img-avatar-3" src="src/assets/images/avatar_hat_1782705897903.jpg" alt="Capybara wearing yellow hat profile avatar" class="avatar-img">
+              </div>
+              <div class="student-info">
+                <span id="student-name-3" class="student-name">Kevin L.</span>
+                <span id="student-role-3" class="student-role">High School Student</span>
+              </div>
+            </div>
+            <blockquote id="testimonial-quote-3" class="testimonial-text">
+              "The 1-on-1 help changed everything for me. Having a friendly mentor walk through error messages made code click in a way that school classes never did. Highly recommended!"
+            </blockquote>
+            <div id="stars-3" class="testimonial-rating" aria-label="5 star rating">★★★★★</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+      <div class="contact-container max-width-container">
+        <div class="contact-grid">
+          <!-- Contact Form Block -->
+          <div id="contact-form-block" class="contact-form-card">
+            <h2 id="contact-heading" class="contact-form-title">Say Hello</h2>
+            <p class="contact-form-intro">Have questions or want to join the next cohort? Drop us a line!</p>
+            
+            <form id="contact-form" action="#" method="POST" class="form-grid">
+              <div class="form-group">
+                <label for="contact-name" class="form-label">Name</label>
+                <input type="text" id="contact-name" name="name" placeholder="Your name" required class="form-input">
+              </div>
+              
+              <div class="form-group">
+                <label for="contact-email" class="form-label">Email</label>
+                <input type="email" id="contact-email" name="email" placeholder="Your email address" required class="form-input">
+              </div>
+              
+              <div class="form-group full-width">
+                <label for="contact-message" class="form-label">Message</label>
+                <textarea id="contact-message" name="message" placeholder="Your message..." required class="form-textarea" rows="4"></textarea>
+              </div>
+              
+              <div class="form-group full-width">
+                <button type="submit" id="btn-submit-contact" class="btn btn-primary submit-btn">Send Message</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Contact Details Block -->
+          <div id="contact-details-block" class="contact-details-card">
+            <div class="contact-info-group">
+              <h3 class="contact-info-title">Community Info</h3>
+              <p class="contact-info-detail">
+                <strong>Capybara Testing HQ</strong><br>
+                Riverside Grove, CA
+              </p>
+            </div>
+            
+            <div class="contact-info-group">
+              <h3 class="contact-info-title">Social Media</h3>
+              <div class="social-links-container">
+                <a href="#" class="social-icon" aria-label="Facebook">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                </a>
+                <a href="#" class="social-icon" aria-label="Twitter">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                </a>
+                <a href="#" class="social-icon" aria-label="Instagram">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <div class="contact-info-group mt-auto">
+              <p class="copyright-text">&copy; 2026 Capybara Testing. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Section -->
+  <footer id="footer-block" class="footer">
+    <div class="footer-container max-width-container">
+      <div class="footer-brand-section">
+        <span class="footer-logo">Capybara Testing</span>
+        <p class="footer-tagline">Building a gentle, welcoming space for beginners to learn coding together.</p>
+      </div>
+      
+      <div class="footer-links-section">
+        <h4 class="footer-heading">Quick Links</h4>
+        <ul class="footer-nav">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#programs">Programs</a></li>
+          <li><a href="#student-work">Student Work</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-social-section">
+        <h4 class="footer-heading">Follow Us</h4>
+        <div class="footer-social-links">
+          <a href="#" class="footer-social-icon" aria-label="GitHub">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          </a>
+          <a href="#" class="footer-social-icon" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="#" class="footer-social-icon" aria-label="Discord">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 4.418 3.582 8 8 8a7.963 7.963 0 0 0 4-.74V22l-4-4-4 4v-4.74A7.963 7.963 0 0 0 18 8z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom max-width-container">
+      <p class="footer-copyright">&copy; 2026 Capybara Testing. Designed with calm, earth-inspired tones.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
