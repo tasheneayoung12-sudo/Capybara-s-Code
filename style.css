@@ -938,3 +938,26 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   margin-top: 8px;
 }
 
+/* Spinner & Replay Animations */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#btn-replay-video:hover {
+  background-color: var(--primary-hover) !important;
+  transform: translateY(-1px);
+}
+
+#btn-replay-video:active {
+  transform: translateY(1px);
+}
+

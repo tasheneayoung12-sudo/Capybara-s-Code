@@ -157,6 +157,22 @@
             <blockquote id="testimonial-quote-1" class="testimonial-text">
               "Found my coding home here. Everyone is so supportive and patient. I never felt silly asking 'basic' questions, and now I can comfortably build static web pages on my own!"
             </blockquote>
+            
+            <!-- Embedded Student Work (Canva Video) -->
+            <div style="position: relative; width: 100%; height: 0; padding-top: 56.2500%; padding-bottom: 0; box-shadow: var(--shadow-sm); margin-top: 1em; margin-bottom: 0.8em; overflow: hidden; border-radius: var(--border-radius-xs); will-change: transform; border: 1px solid var(--border-color);">
+              <iframe id="canva-video-iframe" loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0; margin: 0;" src="https://www.canva.com/design/DAHOqSpCeAo/WXLfoBwb6dLGKDo8B1D0ZA/watch?embed" allowfullscreen="allowfullscreen" allow="fullscreen"></iframe>
+            </div>
+            <div style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+              <div>
+                <a href="https://www.canva.com/design/DAHOqSpCeAo/WXLfoBwb6dLGKDo8B1D0ZA/watch?utm_content=DAHOqSpCeAo&amp;utm_campaign=designshare&amp;utm_medium=embeds&amp;utm_source=link" target="_blank" rel="noopener" style="font-size: 0.85rem; color: var(--primary-color); font-weight: 600; text-decoration: underline; transition: var(--transition-smooth);">CLASS: WEDNESDAY</a>
+                <span style="font-size: 0.85rem; opacity: 0.7;">by Tashenea Burns-young</span>
+              </div>
+              <button id="btn-replay-video" style="font-size: 0.8rem; background-color: var(--primary-color); color: var(--white); border: none; padding: 6px 12px; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; transition: var(--transition-smooth);" aria-label="Replay video">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Replay
+              </button>
+            </div>
+
             <div id="stars-1" class="testimonial-rating" aria-label="5 star rating">★★★★★</div>
           </div>
 
@@ -174,6 +190,22 @@
             <blockquote id="testimonial-quote-2" class="testimonial-text">
               "The capybara theme makes learning so calm and relaxing. It really diffuses the stress of debugging. I love how our projects focus on helping real communities!"
             </blockquote>
+
+            <!-- Embedded Student Work (Canva Video) for Sarah -->
+            <div style="position: relative; width: 100%; height: 0; padding-top: 56.2500%; padding-bottom: 0; box-shadow: var(--shadow-sm); margin-top: 1em; margin-bottom: 0.8em; overflow: hidden; border-radius: var(--border-radius-xs); will-change: transform; border: 1px solid var(--border-color);">
+              <iframe id="canva-video-iframe-sarah" loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0; margin: 0;" src="https://www.canva.com/design/DAHOqSpCeAo/WXLfoBwb6dLGKDo8B1D0ZA/watch?embed" allowfullscreen="allowfullscreen" allow="fullscreen"></iframe>
+            </div>
+            <div style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+              <div>
+                <a href="https://www.canva.com/design/DAHOqSpCeAo/WXLfoBwb6dLGKDo8B1D0ZA/watch?utm_content=DAHOqSpCeAo&amp;utm_campaign=designshare&amp;utm_medium=embeds&amp;utm_source=link" target="_blank" rel="noopener" style="font-size: 0.85rem; color: var(--primary-color); font-weight: 600; text-decoration: underline; transition: var(--transition-smooth);">CLASS: WEDNESDAY</a>
+                <span style="font-size: 0.85rem; opacity: 0.7;">by Tashenea Burns-young</span>
+              </div>
+              <button id="btn-replay-video-sarah" style="font-size: 0.8rem; background-color: var(--primary-color); color: var(--white); border: none; padding: 6px 12px; border-radius: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; transition: var(--transition-smooth);" aria-label="Replay video">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                Replay
+              </button>
+            </div>
+
             <div id="stars-2" class="testimonial-rating" aria-label="5 star rating">★★★★★</div>
           </div>
 
@@ -393,6 +425,66 @@
         closeModal();
       }
     });
+
+    // Replay video logic
+    const replayBtn = document.getElementById('btn-replay-video');
+    if (replayBtn) {
+      replayBtn.addEventListener('click', function() {
+        const iframe = document.getElementById('canva-video-iframe');
+        if (iframe) {
+          // Store original src
+          const originalSrc = iframe.src;
+          
+          // Show momentary reloading state
+          replayBtn.disabled = true;
+          replayBtn.innerHTML = `
+            <svg class="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 2px;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 0 1 4 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            Restarting...
+          `;
+          
+          // Force iframe to reload
+          iframe.src = '';
+          iframe.src = originalSrc;
+          
+          // Restore button state
+          setTimeout(() => {
+            replayBtn.disabled = false;
+            replayBtn.innerHTML = `
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Replay
+            `;
+          }, 800);
+        }
+      });
+    }
+
+    // Replay video logic for Sarah T's video
+    const replayBtnSarah = document.getElementById('btn-replay-video-sarah');
+    if (replayBtnSarah) {
+      replayBtnSarah.addEventListener('click', function() {
+        const iframeSarah = document.getElementById('canva-video-iframe-sarah');
+        if (iframeSarah) {
+          const originalSrc = iframeSarah.src;
+          
+          replayBtnSarah.disabled = true;
+          replayBtnSarah.innerHTML = `
+            <svg class="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 2px;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 0 1 4 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            Restarting...
+          `;
+          
+          iframeSarah.src = '';
+          iframeSarah.src = originalSrc;
+          
+          setTimeout(() => {
+            replayBtnSarah.disabled = false;
+            replayBtnSarah.innerHTML = `
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Replay
+            `;
+          }, 800);
+        }
+      });
+    }
   </script>
 
 </body>
