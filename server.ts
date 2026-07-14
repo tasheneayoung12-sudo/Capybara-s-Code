@@ -220,17 +220,18 @@ app.post("/api/contact", async (req, res) => {
     const referer = req.get("referer") || "http://localhost:3000";
     const origin = req.get("origin") || "http://localhost:3000";
 
-    console.log(`📩 Relaying contact form submission for ${email} through server proxy...`);
+    // Respond immediately to the frontend once saved to MongoDB Atlas
+    if (savedToMongo) {
+      res.status(200).json({ 
+        success: true, 
+        message: "Message received and stored in database successfully!", 
+        databaseSaved: true,
+        mongoId
+      });
 
-    let formSubmitSuccess = false;
-    let data: any = {};
-
-    try {
-      // Set a 4-second timeout for the external FormSubmit service to keep the app highly responsive
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-      const response = await fetch("https://formsubmit.co/ajax/tashenea.young12@gmail.com", {
+      // Fire-and-forget relay to FormSubmit in the background so it doesn't block or cause frontend timeouts
+      console.log(`📩 Relaying contact form submission for ${email} to FormSubmit in the background...`);
+      fetch("https://formsubmit.co/ajax/tashenea.young12@gmail.com", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -239,48 +240,64 @@ app.post("/api/contact", async (req, res) => {
           "Origin": origin
         },
         body: JSON.stringify({
-          name,
-          email,
-          message,
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          message: message.trim(),
           _subject: "New Contact Message - Capybara Testing"
-        }),
-        signal: controller.signal
+        })
+      })
+      .then(async (response) => {
+        const text = await response.text();
+        if (response.ok) {
+          console.log("✅ Background FormSubmit relay succeeded:", text);
+        } else {
+          console.warn(`⚠️ Background FormSubmit returned status ${response.status}:`, text);
+        }
+      })
+      .catch((err) => {
+        console.error("❌ Background FormSubmit relay failed:", err.message || err);
       });
 
-      clearTimeout(timeoutId);
-
-      const text = await response.text();
-      try {
-        data = JSON.parse(text);
-      } catch (parseErr) {
-        data = { rawResponse: text };
-      }
-
-      if (response.ok) {
-        formSubmitSuccess = true;
-        console.log("✅ Contact form relayed to FormSubmit successfully!");
-      } else {
-        console.warn(`⚠️ FormSubmit returned status ${response.status}:`, data);
-      }
-    } catch (fetchErr: any) {
-      console.error("⚠️ Failed to relay to FormSubmit (timed out or network error):", fetchErr.message || fetchErr);
-      data = { error: fetchErr.message || "Request timed out" };
+      return;
     }
 
-    // Since we've successfully stored it in MongoDB, we consider the overall action a success!
-    if (savedToMongo || formSubmitSuccess) {
-      console.log("✅ Contact form submission process completed.");
-      return res.json({ 
-        success: true, 
-        message: "Message sent and stored successfully!", 
-        databaseSaved: savedToMongo,
-        formSubmitSaved: formSubmitSuccess,
-        mongoId,
-        data 
-      });
+    // Fallback if MongoDB is offline: attempt a synchronous block for FormSubmit so the message is not lost
+    console.log(`📩 MongoDB offline, attempting direct relay to FormSubmit...`);
+    const response = await fetch("https://formsubmit.co/ajax/tashenea.young12@gmail.com", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Referer": referer,
+        "Origin": origin
+      },
+      body: JSON.stringify({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        message: message.trim(),
+        _subject: "New Contact Message - Capybara Testing"
+      })
+    });
+
+    const text = await response.text();
+    let data: any = {};
+    try {
+      data = JSON.parse(text);
+    } catch (parseErr) {
+      data = { rawResponse: text };
     }
 
-    throw new Error("Unable to save message to database and failed to relay to email notification service.");
+    if (!response.ok) {
+      throw new Error(data.message || `FormSubmit returned status ${response.status}`);
+    }
+
+    console.log("✅ Contact form relayed directly to FormSubmit successfully!");
+    return res.json({ 
+      success: true, 
+      message: "Message sent successfully via email notification service!", 
+      databaseSaved: false,
+      data 
+    });
   } catch (err: any) {
     console.error("❌ Error processing contact form:", err);
     return res.status(500).json({

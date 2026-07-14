@@ -437,11 +437,17 @@
         })
       })
       .then(async response => {
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.error || 'Something went wrong during proxy relay.');
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || 'Something went wrong during proxy relay.');
+          }
+          return data;
+        } else {
+          const text = await response.text();
+          throw new Error('Backend returned an unexpected HTML response. Make sure your server is active on Cloud Run or locally.');
         }
-        return data;
       })
       .then(data => {
         // Show success modal
@@ -453,6 +459,7 @@
       .catch(error => {
         console.error('Error submitting form via AJAX:', error);
         // Fallback: Submit standard form as fallback if AJAX fails
+        alert('AJAX message submission failed (' + error.message + '). Submitting standard email form instead...');
         form.submit();
       })
       .finally(() => {
@@ -587,11 +594,17 @@
           })
         })
         .then(async response => {
-          const data = await response.json();
-          if (!response.ok) {
-            throw new Error(data.error || 'Something went wrong during submission.');
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(data.error || 'Something went wrong during submission.');
+            }
+            return data;
+          } else {
+            const text = await response.text();
+            throw new Error('Survey backend returned an unexpected HTML response. Make sure your server is active on Cloud Run or locally.');
           }
-          return data;
         })
         .then(data => {
           // Success! Show success state, clear form, display message
