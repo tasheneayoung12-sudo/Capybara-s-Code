@@ -16,6 +16,17 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Enable CORS for external requests (e.g. from GitHub Pages)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // MongoDB Connection Logic
 const rawUri = process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb+srv://gothtechies26_db_user:<Gothtechies2026>@gothtechiescluster.bfsxlti.mongodb.net/?appName=GothTechiesCluster";
 

@@ -396,6 +396,17 @@
   </div>
 
   <script>
+    // Automatically determine backend base URL.
+    // If running on local development or within the AI Studio preview environment, keep it relative.
+    // If running on GitHub Pages, use the live Cloud Run backend URL of this AI Studio preview app.
+    function getApiBaseUrl() {
+      const currentHost = window.location.hostname;
+      if (currentHost === 'localhost' || currentHost === '127.0.0.1' || currentHost.includes('ais-dev-') || currentHost.includes('ais-pre-')) {
+        return '';
+      }
+      return 'https://ais-pre-7fmfa4hwgerjc5memwbh5v-818302463217.us-east1.run.app';
+    }
+
     document.getElementById('contact-form').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -413,7 +424,7 @@
       const message = document.getElementById('contact-message').value;
       
       // Submit via server-side proxy to bypass sandbox CORS constraints
-      fetch('/api/contact', {
+      fetch(getApiBaseUrl() + '/api/contact', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -561,7 +572,7 @@
         const newsletterConsent = document.getElementById('survey-newsletter').checked;
         
         // Send to POST /api/website-survey
-        fetch('/api/website-survey', {
+        fetch(getApiBaseUrl() + '/api/website-survey', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
