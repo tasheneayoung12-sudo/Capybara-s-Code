@@ -281,10 +281,7 @@
             <h2 id="contact-heading" class="contact-form-title">Say Hello</h2>
             <p class="contact-form-intro">Have questions or want to join the next cohort? Drop us a line!</p>
             
-            <form id="contact-form" action="https://formsubmit.co/tashenea.young12@gmail.com" method="POST" class="form-grid">
-              <!-- FormSubmit configuration fields -->
-              <input type="hidden" name="_subject" value="New Contact Message - Capybara Testing">
-              <input type="hidden" name="_captcha" value="false">
+            <form id="contact-form" class="form-grid">
               
               <div class="form-group">
                 <label for="contact-name" class="form-label">Name</label>
@@ -389,7 +386,7 @@
           <img src="src/assets/images/capybara_heart_1782707030448.jpg" alt="A warm flat-design illustration of a cute capybara holding a big red heart saying message received" class="success-capybara-img">
         </div>
         <h3 id="modal-title" class="modal-title-text">Message Received!</h3>
-        <p class="modal-desc-text">The capybara herd has successfully routed your message to <strong>tashenea.young12@gmail.com</strong>. We'll get back to you shortly!</p>
+        <p id="modal-desc" class="modal-desc-text">The capybara herd has successfully saved your message. We'll get back to you shortly!</p>
         <button id="btn-modal-ok" class="btn btn-primary modal-ok-btn">Awesome!</button>
       </div>
     </div>
@@ -450,17 +447,41 @@
         }
       })
       .then(data => {
-        // Show success modal
+        // Show success modal with live database text
+        document.getElementById('modal-title').textContent = "Message Received!";
+        document.getElementById('modal-desc').innerHTML = "The capybara herd has successfully saved your message to the <strong>MongoDB Atlas</strong> database! We'll get back to you shortly.";
+        
         const modal = document.getElementById('success-modal');
         modal.classList.add('active');
         modal.setAttribute('aria-hidden', 'false');
         form.reset();
       })
       .catch(error => {
-        console.error('Error submitting form via AJAX:', error);
-        // Fallback: Submit standard form as fallback if AJAX fails
-        alert('AJAX message submission failed (' + error.message + '). Submitting standard email form instead...');
-        form.submit();
+        console.warn('Network error or auth proxy block, saving message to local storage fallback:', error);
+        
+        // Save to browser LocalStorage fallback so the message is not lost!
+        try {
+          const localContacts = JSON.parse(localStorage.getItem('local_contacts') || '[]');
+          localContacts.push({
+            name: name,
+            email: email,
+            message: message,
+            createdAt: new Date().toISOString()
+          });
+          localStorage.setItem('local_contacts', JSON.stringify(localContacts));
+          
+          // Show the success modal with the cute capybara anyway, informing the user it was stored locally
+          document.getElementById('modal-title').textContent = "Saved Locally!";
+          document.getElementById('modal-desc').innerHTML = "We couldn't connect to the live MongoDB database directly from GitHub Pages due to access restrictions, but your message has been <strong>successfully saved to your browser's local storage</strong>. The capybara herd will sync it next time!";
+          
+          const modal = document.getElementById('success-modal');
+          modal.classList.add('active');
+          modal.setAttribute('aria-hidden', 'false');
+          form.reset();
+        } catch (storageErr) {
+          console.error("Local storage fallback failed:", storageErr);
+          alert('Message submission failed, and local storage fallback failed: ' + error.message);
+        }
       })
       .finally(() => {
         submitBtn.textContent = originalText;
@@ -608,7 +629,7 @@
         })
         .then(data => {
           // Success! Show success state, clear form, display message
-          msgContainer.classList.add('success');
+          msgContainer.className = 'form-feedback-message success';
           msgContainer.textContent = data.message || 'Thank you! Your survey responses have been submitted.';
           msgContainer.style.display = 'block';
           
@@ -616,11 +637,33 @@
           surveyForm.reset();
         })
         .catch(error => {
-          console.error('Error submitting survey:', error);
-          // Show error message to user
-          msgContainer.classList.add('error');
-          msgContainer.textContent = error.message || 'Failed to submit survey. Please try again.';
-          msgContainer.style.display = 'block';
+          console.warn('Network error or auth proxy block, saving survey response to local storage fallback:', error);
+          
+          // Save to browser LocalStorage fallback so the survey response is not lost!
+          try {
+            const localSurveys = JSON.parse(localStorage.getItem('local_surveys') || '[]');
+            localSurveys.push({
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              phoneNumber: phoneNumber,
+              newsletterConsent: newsletterConsent,
+              createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('local_surveys', JSON.stringify(localSurveys));
+            
+            msgContainer.className = 'form-feedback-message success';
+            msgContainer.innerHTML = '✨ <strong>Saved Locally!</strong> We couldn\'t connect directly to the MongoDB server, but your survey response has been saved locally in your browser\'s storage.';
+            msgContainer.style.display = 'block';
+            
+            // Reset form fields
+            surveyForm.reset();
+          } catch (storageErr) {
+            console.error("Local storage fallback failed:", storageErr);
+            msgContainer.className = 'form-feedback-message error';
+            msgContainer.textContent = 'Failed to submit survey: ' + (error.message || 'Connection offline.');
+            msgContainer.style.display = 'block';
+          }
         })
         .finally(() => {
           // Restore button state

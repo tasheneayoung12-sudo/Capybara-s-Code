@@ -182,7 +182,7 @@ app.post("/api/website-survey", async (req, res) => {
   }
 });
 
-// API POST endpoint to proxy contact form submissions securely and save to MongoDB Atlas
+// API POST endpoint to save contact form submissions directly to MongoDB Atlas
 app.post("/api/contact", async (req, res) => {
   try {
     const { name, email, message } = req.body;
@@ -196,108 +196,28 @@ app.post("/api/contact", async (req, res) => {
       await connectMongoDB();
     }
 
-    let savedToMongo = false;
-    let mongoId = null;
-
     if ((mongoose.connection.readyState as number) === 1) {
-      try {
-        const contactDoc = new SayHello({
-          name: name.trim(),
-          email: email.trim().toLowerCase(),
-          message: message.trim()
-        });
-        await contactDoc.save();
-        console.log(`📝 Contact message saved successfully to MongoDB! (ID: ${contactDoc._id})`);
-        savedToMongo = true;
-        mongoId = contactDoc._id;
-      } catch (dbErr: any) {
-        console.error("❌ Error saving contact message to MongoDB Atlas:", dbErr);
-      }
-    } else {
-      console.warn("⚠️ Unable to save to MongoDB Atlas: database is currently offline.");
-    }
-
-    const referer = req.get("referer") || "http://localhost:3000";
-    const origin = req.get("origin") || "http://localhost:3000";
-
-    // Respond immediately to the frontend once saved to MongoDB Atlas
-    if (savedToMongo) {
-      res.status(200).json({ 
-        success: true, 
-        message: "Message received and stored in database successfully!", 
-        databaseSaved: true,
-        mongoId
-      });
-
-      // Fire-and-forget relay to FormSubmit in the background so it doesn't block or cause frontend timeouts
-      console.log(`📩 Relaying contact form submission for ${email} to FormSubmit in the background...`);
-      fetch("https://formsubmit.co/ajax/tashenea.young12@gmail.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Referer": referer,
-          "Origin": origin
-        },
-        body: JSON.stringify({
-          name: name.trim(),
-          email: email.trim().toLowerCase(),
-          message: message.trim(),
-          _subject: "New Contact Message - Capybara Testing"
-        })
-      })
-      .then(async (response) => {
-        const text = await response.text();
-        if (response.ok) {
-          console.log("✅ Background FormSubmit relay succeeded:", text);
-        } else {
-          console.warn(`⚠️ Background FormSubmit returned status ${response.status}:`, text);
-        }
-      })
-      .catch((err) => {
-        console.error("❌ Background FormSubmit relay failed:", err.message || err);
-      });
-
-      return;
-    }
-
-    // Fallback if MongoDB is offline: attempt a synchronous block for FormSubmit so the message is not lost
-    console.log(`📩 MongoDB offline, attempting direct relay to FormSubmit...`);
-    const response = await fetch("https://formsubmit.co/ajax/tashenea.young12@gmail.com", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Referer": referer,
-        "Origin": origin
-      },
-      body: JSON.stringify({
+      const contactDoc = new SayHello({
         name: name.trim(),
         email: email.trim().toLowerCase(),
-        message: message.trim(),
-        _subject: "New Contact Message - Capybara Testing"
-      })
-    });
-
-    const text = await response.text();
-    let data: any = {};
-    try {
-      data = JSON.parse(text);
-    } catch (parseErr) {
-      data = { rawResponse: text };
+        message: message.trim()
+      });
+      await contactDoc.save();
+      console.log(`📝 Contact message saved successfully to MongoDB! (ID: ${contactDoc._id})`);
+      
+      return res.status(201).json({ 
+        success: true, 
+        message: "Your message has been successfully saved to our live MongoDB Atlas database!", 
+        databaseSaved: true,
+        mongoId: contactDoc._id
+      });
+    } else {
+      console.warn("⚠️ Unable to save to MongoDB Atlas: database is currently offline.");
+      return res.status(503).json({
+        error: "Database service is temporarily offline. We will attempt to process your message locally.",
+        databaseSaved: false
+      });
     }
-
-    if (!response.ok) {
-      throw new Error(data.message || `FormSubmit returned status ${response.status}`);
-    }
-
-    console.log("✅ Contact form relayed directly to FormSubmit successfully!");
-    return res.json({ 
-      success: true, 
-      message: "Message sent successfully via email notification service!", 
-      databaseSaved: false,
-      data 
-    });
   } catch (err: any) {
     console.error("❌ Error processing contact form:", err);
     return res.status(500).json({
