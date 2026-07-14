@@ -29,8 +29,7 @@
           <li><a id="nav-link-about" href="#about" class="nav-item">About</a></li>
           <li><a id="nav-link-programs" href="#programs" class="nav-item">Programs</a></li>
           <li><a id="nav-link-student-work" href="#student-work" class="nav-item">Student Work</a></li>
-          <li><a id="nav-link-survey" href="#survey" class="nav-item">Survey</a></li>
-          <li><a id="nav-link-contact" href="#contact" class="nav-item">Contact</a></li>
+          <li><a id="nav-link-contact" href="#nav-link-contact" class="nav-item">Contact</a></li>
         </ul>
       </nav>
     </div>
@@ -230,48 +229,6 @@
       </div>
     </section>
 
-    <!-- Survey Section -->
-    <section id="survey" class="survey-section">
-      <div class="survey-container max-width-container">
-        <div class="survey-card">
-          <h2 id="survey-heading" class="survey-title">Website Survey</h2>
-          <p class="survey-intro">We'd love to hear your thoughts! Help us improve our Capybara Coding Club.</p>
-          
-          <form id="survey-form" class="form-grid">
-            <div class="form-group">
-              <label for="survey-firstname" class="form-label">First Name <span class="required-indicator">*</span></label>
-              <input type="text" id="survey-firstname" name="firstName" placeholder="Your first name" required class="form-input">
-            </div>
-            
-            <div class="form-group">
-              <label for="survey-lastname" class="form-label">Last Name <span class="required-indicator">*</span></label>
-              <input type="text" id="survey-lastname" name="lastName" placeholder="Your last name" required class="form-input">
-            </div>
-            
-            <div class="form-group">
-              <label for="survey-email" class="form-label">Email Address <span class="required-indicator">*</span></label>
-              <input type="email" id="survey-email" name="email" placeholder="Your email address" required class="form-input">
-            </div>
-            
-            <div class="form-group">
-              <label for="survey-phone" class="form-label">Phone Number <span class="optional-label">(Optional)</span></label>
-              <input type="tel" id="survey-phone" name="phoneNumber" placeholder="e.g., (123) 456-7890" class="form-input">
-            </div>
-            
-            <div class="form-group full-width checkbox-group">
-              <input type="checkbox" id="survey-newsletter" name="newsletterConsent" class="form-checkbox">
-              <label for="survey-newsletter" class="checkbox-label">Yes, I want to subscribe to the Capybara newsletter & community updates!</label>
-            </div>
-            
-            <div class="form-group full-width">
-              <button type="submit" id="btn-submit-survey" class="btn btn-primary submit-btn">Submit Survey</button>
-            </div>
-          </form>
-          <div id="survey-message-container" class="form-feedback-message"></div>
-        </div>
-      </div>
-    </section>
-
     <!-- Contact Section -->
     <section id="contact" class="contact-section">
       <div class="contact-container max-width-container">
@@ -284,18 +241,29 @@
             <form id="contact-form" class="form-grid">
               
               <div class="form-group">
-                <label for="contact-name" class="form-label">Name</label>
+                <label for="contact-name" class="form-label">Name <span class="required-indicator">*</span></label>
                 <input type="text" id="contact-name" name="name" placeholder="Your name" required class="form-input">
               </div>
               
               <div class="form-group">
-                <label for="contact-email" class="form-label">Email</label>
+                <label for="contact-email" class="form-label">Email <span class="required-indicator">*</span></label>
                 <input type="email" id="contact-email" name="email" placeholder="Your email address" required class="form-input">
+              </div>
+
+              <div class="form-group full-width toggle-group">
+                <label class="form-label">Join Waitlist</label>
+                <div class="toggle-container">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="contact-waitlist-toggle" name="joinWaitlist" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span id="toggle-label" class="checkbox-label">Yes, join the community waitlist</span>
+                </div>
               </div>
               
               <div class="form-group full-width">
-                <label for="contact-message" class="form-label">Message</label>
-                <textarea id="contact-message" name="message" placeholder="Your message..." required class="form-textarea" rows="4"></textarea>
+                <label for="contact-message" class="form-label">Message <span class="optional-label">(Optional)</span></label>
+                <textarea id="contact-message" name="message" placeholder="Your message..." class="form-textarea" rows="4"></textarea>
               </div>
               
               <div class="form-group full-width">
@@ -393,15 +361,20 @@
   </div>
 
   <script>
+    // === CONFIGURATION ===
+    // If you host your backend server on a platform like Render or Railway, paste its URL here:
+    const PRODUCTION_BACKEND_URL = "https://ais-pre-7fmfa4hwgerjc5memwbh5v-818302463217.us-east1.run.app";
+    // =====================
+
     // Automatically determine backend base URL.
     // If running on local development or within the AI Studio preview environment, keep it relative.
-    // If running on GitHub Pages, use the live Cloud Run backend URL of this AI Studio preview app.
+    // If running on GitHub Pages, use the configured live production backend URL.
     function getApiBaseUrl() {
       const currentHost = window.location.hostname;
       if (currentHost === 'localhost' || currentHost === '127.0.0.1' || currentHost.includes('ais-dev-') || currentHost.includes('ais-pre-')) {
         return '';
       }
-      return 'https://ais-pre-7fmfa4hwgerjc5memwbh5v-818302463217.us-east1.run.app';
+      return PRODUCTION_BACKEND_URL;
     }
 
     document.getElementById('contact-form').addEventListener('submit', function(e) {
@@ -419,6 +392,7 @@
       const name = document.getElementById('contact-name').value;
       const email = document.getElementById('contact-email').value;
       const message = document.getElementById('contact-message').value;
+      const joinWaitlist = document.getElementById('contact-waitlist-toggle').checked;
       
       // Submit via server-side proxy to bypass sandbox CORS constraints
       fetch(getApiBaseUrl() + '/api/contact', {
@@ -430,7 +404,8 @@
         body: JSON.stringify({
           name: name,
           email: email,
-          message: message
+          message: message,
+          joinWaitlist: joinWaitlist
         })
       })
       .then(async response => {
@@ -447,14 +422,25 @@
         }
       })
       .then(data => {
-        // Show success modal with live database text
-        document.getElementById('modal-title').textContent = "Message Received!";
-        document.getElementById('modal-desc').innerHTML = "The capybara herd has successfully saved your message to the <strong>MongoDB Atlas</strong> database! We'll get back to you shortly.";
+        // Show success modal depending on waitlist toggle
+        if (joinWaitlist) {
+          document.getElementById('modal-title').textContent = "Waitlist Joined!";
+          document.getElementById('modal-desc').innerHTML = "Welcome to the herd! Your submission has been successfully saved, and we've added you to the <strong>cohort waitlist</strong>. We'll get back to you shortly!";
+        } else {
+          document.getElementById('modal-title').textContent = "Message Received!";
+          document.getElementById('modal-desc').innerHTML = "The capybara herd has successfully saved your message! We'll get back to you shortly.";
+        }
         
         const modal = document.getElementById('success-modal');
         modal.classList.add('active');
         modal.setAttribute('aria-hidden', 'false');
         form.reset();
+        
+        // Reset toggle label
+        const toggleLabel = document.getElementById('toggle-label');
+        if (toggleLabel) {
+          toggleLabel.textContent = 'Yes, join the community waitlist';
+        }
       })
       .catch(error => {
         console.warn('Network error or auth proxy block, saving message to local storage fallback:', error);
@@ -466,18 +452,30 @@
             name: name,
             email: email,
             message: message,
+            joinWaitlist: joinWaitlist,
             createdAt: new Date().toISOString()
           });
           localStorage.setItem('local_contacts', JSON.stringify(localContacts));
           
           // Show the success modal with the cute capybara anyway, informing the user it was stored locally
-          document.getElementById('modal-title').textContent = "Saved Locally!";
-          document.getElementById('modal-desc').innerHTML = "We couldn't connect to the live MongoDB database directly from GitHub Pages due to access restrictions, but your message has been <strong>successfully saved to your browser's local storage</strong>. The capybara herd will sync it next time!";
+          if (joinWaitlist) {
+            document.getElementById('modal-title').textContent = "Saved Locally!";
+            document.getElementById('modal-desc').innerHTML = "Welcome! Your waitlist preference and message have been <strong>successfully saved to your browser's local storage</strong>. The capybara herd will notify you once cohorts open!";
+          } else {
+            document.getElementById('modal-title').textContent = "Saved Locally!";
+            document.getElementById('modal-desc').innerHTML = "Your message has been <strong>successfully saved to your browser's local storage</strong>. The capybara herd will get back to you shortly!";
+          }
           
           const modal = document.getElementById('success-modal');
           modal.classList.add('active');
           modal.setAttribute('aria-hidden', 'false');
           form.reset();
+          
+          // Reset toggle label
+          const toggleLabel = document.getElementById('toggle-label');
+          if (toggleLabel) {
+            toggleLabel.textContent = 'Yes, join the community waitlist';
+          }
         } catch (storageErr) {
           console.error("Local storage fallback failed:", storageErr);
           alert('Message submission failed, and local storage fallback failed: ' + error.message);
@@ -488,6 +486,19 @@
         submitBtn.disabled = false;
       });
     });
+
+    // Dynamic waitlist toggle label handler
+    const toggleInput = document.getElementById('contact-waitlist-toggle');
+    const toggleLabel = document.getElementById('toggle-label');
+    if (toggleInput && toggleLabel) {
+      toggleInput.addEventListener('change', function() {
+        if (this.checked) {
+          toggleLabel.textContent = 'Yes, join the community waitlist';
+        } else {
+          toggleLabel.textContent = "No, don't join the waitlist";
+        }
+      });
+    }
 
     // Modal closing logic
     const closeModal = () => {
@@ -573,105 +584,7 @@
       });
     }
 
-    // Survey Form Submission logic
-    const surveyForm = document.getElementById('survey-form');
-    if (surveyForm) {
-      surveyForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const submitBtn = document.getElementById('btn-submit-survey');
-        const msgContainer = document.getElementById('survey-message-container');
-        
-        // Reset message container
-        msgContainer.style.display = 'none';
-        msgContainer.className = 'form-feedback-message';
-        msgContainer.textContent = '';
-        
-        // Change button state to sending
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Submitting...';
-        submitBtn.disabled = true;
-        
-        // Grab form values
-        const firstName = document.getElementById('survey-firstname').value;
-        const lastName = document.getElementById('survey-lastname').value;
-        const email = document.getElementById('survey-email').value;
-        const phoneNumber = document.getElementById('survey-phone').value;
-        const newsletterConsent = document.getElementById('survey-newsletter').checked;
-        
-        // Send to POST /api/website-survey
-        fetch(getApiBaseUrl() + '/api/website-survey', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            phoneNumber: phoneNumber,
-            newsletterConsent: newsletterConsent
-          })
-        })
-        .then(async response => {
-          const contentType = response.headers.get("content-type");
-          if (contentType && contentType.includes("application/json")) {
-            const data = await response.json();
-            if (!response.ok) {
-              throw new Error(data.error || 'Something went wrong during submission.');
-            }
-            return data;
-          } else {
-            const text = await response.text();
-            throw new Error('Survey backend returned an unexpected HTML response. Make sure your server is active on Cloud Run or locally.');
-          }
-        })
-        .then(data => {
-          // Success! Show success state, clear form, display message
-          msgContainer.className = 'form-feedback-message success';
-          msgContainer.textContent = data.message || 'Thank you! Your survey responses have been submitted.';
-          msgContainer.style.display = 'block';
-          
-          // Reset form fields
-          surveyForm.reset();
-        })
-        .catch(error => {
-          console.warn('Network error or auth proxy block, saving survey response to local storage fallback:', error);
-          
-          // Save to browser LocalStorage fallback so the survey response is not lost!
-          try {
-            const localSurveys = JSON.parse(localStorage.getItem('local_surveys') || '[]');
-            localSurveys.push({
-              firstName: firstName,
-              lastName: lastName,
-              email: email,
-              phoneNumber: phoneNumber,
-              newsletterConsent: newsletterConsent,
-              createdAt: new Date().toISOString()
-            });
-            localStorage.setItem('local_surveys', JSON.stringify(localSurveys));
-            
-            msgContainer.className = 'form-feedback-message success';
-            msgContainer.innerHTML = '✨ <strong>Saved Locally!</strong> We couldn\'t connect directly to the MongoDB server, but your survey response has been saved locally in your browser\'s storage.';
-            msgContainer.style.display = 'block';
-            
-            // Reset form fields
-            surveyForm.reset();
-          } catch (storageErr) {
-            console.error("Local storage fallback failed:", storageErr);
-            msgContainer.className = 'form-feedback-message error';
-            msgContainer.textContent = 'Failed to submit survey: ' + (error.message || 'Connection offline.');
-            msgContainer.style.display = 'block';
-          }
-        })
-        .finally(() => {
-          // Restore button state
-          submitBtn.textContent = originalText;
-          submitBtn.disabled = false;
-        });
-      });
-    }
+
   </script>
 
 </body>

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Goth Capybara",
+    "email": "herd_leader@capy.com",
+    "message": "Hello from the newly simplified single-form community page!",
+    "id": "kbs99s1mcmrl92lo2",
+    "createdAt": "2026-07-14T22:56:00.818Z"
+  },
+  {
+    "name": "Goth Capybara Testing",
+    "email": "waitlist_tester@capy.com",
+    "message": "",
+    "joinWaitlist": true,
+    "id": "porqq5myfmrlahjx1",
+    "createdAt": "2026-07-14T23:35:38.005Z"
+  }
+]
