@@ -1,0 +1,38 @@
+{
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "pattern": "^\\S+@\\S+\\.\\S+$"
+    },
+    "phoneNumber": {
+      "type": "string"
+    },
+    "newsletterConsent": {
+      "type": "boolean",
+      "default": false
+    },
+    "formName": {
+      "type": "string",
+      "default": "Website Survey"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "firstName",
+    "lastName",
+    "email",
+    "formName"
+  ],
+  "additionalProperties": false
+}

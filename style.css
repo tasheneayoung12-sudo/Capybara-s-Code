@@ -961,3 +961,108 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   transform: translateY(1px);
 }
 
+/* --- Survey Section --- */
+.survey-section {
+  padding-top: 100px;
+  padding-bottom: 100px;
+  background-color: var(--white);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.survey-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.survey-card {
+  background-color: var(--white);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--border-color);
+  padding: 40px;
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 576px) {
+  .survey-card {
+    padding: 24px;
+  }
+}
+
+.survey-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.survey-intro {
+  font-size: 1rem;
+  opacity: 0.85;
+  margin-bottom: 32px;
+}
+
+.required-indicator {
+  color: #c0392b;
+  font-weight: bold;
+}
+
+.optional-label {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  text-transform: none;
+  font-weight: normal;
+  letter-spacing: 0;
+}
+
+/* Checkbox Alignment & Layout */
+.checkbox-group {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.form-checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-color);
+  cursor: pointer;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.checkbox-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-color);
+  opacity: 0.85;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.4;
+}
+
+/* Feedback Messages Styles */
+.form-feedback-message {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: var(--border-radius-xs);
+  font-size: 0.95rem;
+  display: none;
+}
+
+.form-feedback-message.success {
+  display: block;
+  background-color: rgba(168, 198, 134, 0.15);
+  border: 1px solid var(--secondary-color);
+  color: var(--primary-hover);
+}
+
+.form-feedback-message.error {
+  display: block;
+  background-color: rgba(192, 41, 43, 0.1);
+  border: 1px solid #c0392b;
+  color: #c0392b;
+}
+

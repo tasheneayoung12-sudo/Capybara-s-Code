@@ -1,0 +1,21 @@
+[
+  {
+    "id": "survey_1784018019391_zrxpb8bm7",
+    "firstName": "JSON",
+    "lastName": "Only",
+    "email": "json-only@gothtechies.com",
+    "newsletterConsent": false,
+    "formName": "Website Survey",
+    "createdAt": "2026-07-14T08:33:39.391Z"
+  },
+  {
+    "firstName": "Goth",
+    "lastName": "Techie",
+    "email": "test@gothtechies.com",
+    "newsletterConsent": false,
+    "formName": "Website Survey",
+    "createdAt": "2026-07-14T08:00:51.166Z",
+    "id": "6a55ecb3b24462764b5d2b73",
+    "source": "MongoDB Atlas"
+  }
+]

@@ -29,6 +29,7 @@
           <li><a id="nav-link-about" href="#about" class="nav-item">About</a></li>
           <li><a id="nav-link-programs" href="#programs" class="nav-item">Programs</a></li>
           <li><a id="nav-link-student-work" href="#student-work" class="nav-item">Student Work</a></li>
+          <li><a id="nav-link-survey" href="#survey" class="nav-item">Survey</a></li>
           <li><a id="nav-link-contact" href="#contact" class="nav-item">Contact</a></li>
         </ul>
       </nav>
@@ -229,6 +230,48 @@
       </div>
     </section>
 
+    <!-- Survey Section -->
+    <section id="survey" class="survey-section">
+      <div class="survey-container max-width-container">
+        <div class="survey-card">
+          <h2 id="survey-heading" class="survey-title">Website Survey</h2>
+          <p class="survey-intro">We'd love to hear your thoughts! Help us improve our Capybara Coding Club.</p>
+          
+          <form id="survey-form" class="form-grid">
+            <div class="form-group">
+              <label for="survey-firstname" class="form-label">First Name <span class="required-indicator">*</span></label>
+              <input type="text" id="survey-firstname" name="firstName" placeholder="Your first name" required class="form-input">
+            </div>
+            
+            <div class="form-group">
+              <label for="survey-lastname" class="form-label">Last Name <span class="required-indicator">*</span></label>
+              <input type="text" id="survey-lastname" name="lastName" placeholder="Your last name" required class="form-input">
+            </div>
+            
+            <div class="form-group">
+              <label for="survey-email" class="form-label">Email Address <span class="required-indicator">*</span></label>
+              <input type="email" id="survey-email" name="email" placeholder="Your email address" required class="form-input">
+            </div>
+            
+            <div class="form-group">
+              <label for="survey-phone" class="form-label">Phone Number <span class="optional-label">(Optional)</span></label>
+              <input type="tel" id="survey-phone" name="phoneNumber" placeholder="e.g., (123) 456-7890" class="form-input">
+            </div>
+            
+            <div class="form-group full-width checkbox-group">
+              <input type="checkbox" id="survey-newsletter" name="newsletterConsent" class="form-checkbox">
+              <label for="survey-newsletter" class="checkbox-label">Yes, I want to subscribe to the Capybara newsletter & community updates!</label>
+            </div>
+            
+            <div class="form-group full-width">
+              <button type="submit" id="btn-submit-survey" class="btn btn-primary submit-btn">Submit Survey</button>
+            </div>
+          </form>
+          <div id="survey-message-container" class="form-feedback-message"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Contact Section -->
     <section id="contact" class="contact-section">
       <div class="contact-container max-width-container">
@@ -369,8 +412,8 @@
       const email = document.getElementById('contact-email').value;
       const message = document.getElementById('contact-message').value;
       
-      // Submit via AJAX to FormSubmit
-      fetch('https://formsubmit.co/ajax/tashenea.young12@gmail.com', {
+      // Submit via server-side proxy to bypass sandbox CORS constraints
+      fetch('/api/contact', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -379,11 +422,16 @@
         body: JSON.stringify({
           name: name,
           email: email,
-          message: message,
-          _subject: "New Contact Message - Capybara Testing"
+          message: message
         })
       })
-      .then(response => response.json())
+      .then(async response => {
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'Something went wrong during proxy relay.');
+        }
+        return data;
+      })
       .then(data => {
         // Show success modal
         const modal = document.getElementById('success-modal');
@@ -483,6 +531,78 @@
             `;
           }, 800);
         }
+      });
+    }
+
+    // Survey Form Submission logic
+    const surveyForm = document.getElementById('survey-form');
+    if (surveyForm) {
+      surveyForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('btn-submit-survey');
+        const msgContainer = document.getElementById('survey-message-container');
+        
+        // Reset message container
+        msgContainer.style.display = 'none';
+        msgContainer.className = 'form-feedback-message';
+        msgContainer.textContent = '';
+        
+        // Change button state to sending
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Submitting...';
+        submitBtn.disabled = true;
+        
+        // Grab form values
+        const firstName = document.getElementById('survey-firstname').value;
+        const lastName = document.getElementById('survey-lastname').value;
+        const email = document.getElementById('survey-email').value;
+        const phoneNumber = document.getElementById('survey-phone').value;
+        const newsletterConsent = document.getElementById('survey-newsletter').checked;
+        
+        // Send to POST /api/website-survey
+        fetch('/api/website-survey', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phoneNumber: phoneNumber,
+            newsletterConsent: newsletterConsent
+          })
+        })
+        .then(async response => {
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || 'Something went wrong during submission.');
+          }
+          return data;
+        })
+        .then(data => {
+          // Success! Show success state, clear form, display message
+          msgContainer.classList.add('success');
+          msgContainer.textContent = data.message || 'Thank you! Your survey responses have been submitted.';
+          msgContainer.style.display = 'block';
+          
+          // Reset form fields
+          surveyForm.reset();
+        })
+        .catch(error => {
+          console.error('Error submitting survey:', error);
+          // Show error message to user
+          msgContainer.classList.add('error');
+          msgContainer.textContent = error.message || 'Failed to submit survey. Please try again.';
+          msgContainer.style.display = 'block';
+        })
+        .finally(() => {
+          // Restore button state
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        });
       });
     }
   </script>
