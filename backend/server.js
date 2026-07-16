@@ -2,7 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import helmet from "helmet";
+import mongoose from "mongoose";
 import { connectDB } from "./config/db.js";
+import { SayHello } from "./models/SayHello.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 
@@ -48,6 +50,45 @@ app.use(express.urlencoded({ extended: true }));
 // Health Check Endpoint (useful for checking server status on Render/Heroku)
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "healthy", timestamp: new Date().toISOString() });
+});
+
+// Database Connection Diagnostics Endpoint
+app.get("/api/test-db", async (req, res) => {
+  try {
+    const readyState = mongoose.connection.readyState;
+    const states = ["disconnected", "connected", "connecting", "disconnecting"];
+    const statusString = states[readyState] || "unknown";
+    
+    let pingSuccess = false;
+    let messageCount = 0;
+    
+    if (readyState === 1) {
+      try {
+        await mongoose.connection.db.admin().ping();
+        pingSuccess = true;
+        messageCount = await SayHello.countDocuments().catch(() => 0);
+      } catch (pingErr) {
+        console.error("Database ping/query failed on backend:", pingErr);
+      }
+    }
+    
+    res.status(200).json({
+      success: true,
+      configured: !!(process.env.MONGODB_URI || process.env.MONGODB_URL),
+      connectionStatus: statusString,
+      readyState: readyState,
+      ping: pingSuccess ? "success" : "failed",
+      databaseName: mongoose.connection.name || "none",
+      messageCount: messageCount,
+      environment: process.env.NODE_ENV || "development",
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message || "Unknown error during diagnostics"
+    });
+  }
 });
 
 // Contact Route Handler

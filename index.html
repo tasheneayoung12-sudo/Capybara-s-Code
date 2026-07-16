@@ -297,6 +297,46 @@
               </div>
             </div>
 
+            <!-- Connection Diagnostics Panel -->
+            <div class="contact-info-group" style="margin-top: 24px; padding: 20px; background-color: var(--accent-light); border: 1.5px solid var(--border-color); border-radius: var(--border-radius-xs); text-align: left;">
+              <h3 class="contact-info-title" style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px; color: var(--text-color); font-size: 1.1rem; font-family: var(--font-display); font-weight: 600;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-color);"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                Diagnostics Panel
+              </h3>
+              <p style="font-size: 0.85rem; margin-bottom: 12px; color: var(--text-color); opacity: 0.9; line-height: 1.4;">
+                Check if your live Render backend and MongoDB database are connected.
+              </p>
+              
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                <!-- Local Environment Test Row -->
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; background: var(--white); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05);">
+                  <span style="font-weight: 600; color: var(--text-color);">Dev Proxy:</span>
+                  <span id="diagnostic-local-status" style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: #888;">
+                    <span style="width: 8px; height: 8px; background: #888; border-radius: 50%; display: inline-block;"></span> UNCHECKED
+                  </span>
+                </div>
+                
+                <!-- Render Environment Test Row -->
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; background: var(--white); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05);">
+                  <span style="font-weight: 600; color: var(--text-color);">Render Live:</span>
+                  <span id="diagnostic-render-status" style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700; color: #888;">
+                    <span style="width: 8px; height: 8px; background: #888; border-radius: 50%; display: inline-block;"></span> UNCHECKED
+                  </span>
+                </div>
+              </div>
+              
+              <div style="display: flex; gap: 8px;">
+                <button id="btn-test-connections" type="button" class="btn btn-primary" style="flex: 1; padding: 10px 14px; font-size: 0.8rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; transition: var(--transition-smooth);">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                  Run Diagnostics
+                </button>
+              </div>
+
+              <!-- Detailed Output Area -->
+              <div id="diagnostic-output-container" style="display: none; margin-top: 10px; font-family: 'Courier New', Courier, monospace; font-size: 0.75rem; background: #1c241c; color: #A8C686; padding: 10px; border-radius: 8px; max-height: 150px; overflow-y: auto; text-align: left; line-height: 1.4; border: 1px solid rgba(255,255,255,0.05);">
+              </div>
+            </div>
+
             <div class="contact-info-group mt-auto">
               <p class="copyright-text">&copy; 2026 Capybara Testing. All rights reserved.</p>
             </div>
@@ -581,6 +621,114 @@
             `;
           }, 800);
         }
+      });
+    }
+
+    // === CONNECTION DIAGNOSTICS LOGIC ===
+    const btnTest = document.getElementById('btn-test-connections');
+    const localStatusEl = document.getElementById('diagnostic-local-status');
+    const renderStatusEl = document.getElementById('diagnostic-render-status');
+    const outputContainer = document.getElementById('diagnostic-output-container');
+
+    if (btnTest) {
+      btnTest.addEventListener('click', async function() {
+        btnTest.disabled = true;
+        btnTest.innerHTML = `<svg class="animate-spin" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 2px;"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 0 1 4 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Testing...`;
+        
+        outputContainer.style.display = 'block';
+        outputContainer.innerHTML = 'Starting system diagnostics...\n';
+        
+        // Helper to update visual badges
+        const updateBadge = (el, status, color, text) => {
+          el.style.color = color;
+          el.innerHTML = `<span style="width: 8px; height: 8px; background: ${color}; border-radius: 50%; display: inline-block;"></span> ${text}`;
+        };
+
+        // Reset badges
+        updateBadge(localStatusEl, 'checking', '#DDBEA9', 'Checking...');
+        updateBadge(renderStatusEl, 'checking', '#DDBEA9', 'Checking...');
+
+        // 1. Test Dev Proxy (/api/test-db)
+        try {
+          outputContainer.innerHTML += '> GET /api/test-db (Dev Proxy)...\n';
+          const localResponse = await fetch('/api/test-db', { headers: { 'Accept': 'application/json' } });
+          const localText = await localResponse.text();
+          let localData;
+          try {
+            localData = JSON.parse(localText);
+          } catch(e) {
+            throw new Error("Local backend did not return JSON. Content: " + localText.substring(0, 50));
+          }
+
+          if (localResponse.ok && localData.success) {
+            const dbStatus = localData.connectionStatus || 'unknown';
+            const dbColor = dbStatus === 'connected' ? '#A8C686' : '#FF6B6B';
+            updateBadge(localStatusEl, dbStatus, dbColor, dbStatus.toUpperCase());
+            outputContainer.innerHTML += `  Local Server: ONLINE\n`;
+            outputContainer.innerHTML += `  Mongoose Status: ${dbStatus.toUpperCase()}\n`;
+            outputContainer.innerHTML += `  Database Name: "${localData.databaseName}"\n`;
+            outputContainer.innerHTML += `  MongoDB Ping: ${localData.ping ? localData.ping.toUpperCase() : 'N/A'}\n`;
+            outputContainer.innerHTML += `  Message Count: ${localData.messageCount}\n`;
+          } else {
+            updateBadge(localStatusEl, 'error', '#FF6B6B', 'ERROR');
+            outputContainer.innerHTML += `  Local Server error: ${localData.error || 'Unknown error'}\n`;
+          }
+        } catch (err) {
+          updateBadge(localStatusEl, 'failed', '#FF6B6B', 'OFFLINE');
+          outputContainer.innerHTML += `  Local Server fetch failed: ${err.message}\n`;
+        }
+
+        outputContainer.innerHTML += '\n';
+
+        // 2. Test Render Live (PRODUCTION_BACKEND_URL + "/api/test-db")
+        try {
+          outputContainer.innerHTML += `> GET ${PRODUCTION_BACKEND_URL}/api/test-db (Render)...\n`;
+          
+          // Use AbortController for 12 second timeout on Render's cold start
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+          const renderResponse = await fetch(PRODUCTION_BACKEND_URL + '/api/test-db', { 
+            headers: { 'Accept': 'application/json' },
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
+          const renderText = await renderResponse.text();
+          let renderData;
+          try {
+            renderData = JSON.parse(renderText);
+          } catch(e) {
+            throw new Error("Render backend did not return JSON. Content: " + renderText.substring(0, 50));
+          }
+
+          if (renderResponse.ok && renderData.success) {
+            const dbStatus = renderData.connectionStatus || 'unknown';
+            const dbColor = dbStatus === 'connected' ? '#A8C686' : '#FF6B6B';
+            updateBadge(renderStatusEl, dbStatus, dbColor, dbStatus.toUpperCase());
+            outputContainer.innerHTML += `  Render Server: ONLINE\n`;
+            outputContainer.innerHTML += `  Mongoose Status: ${dbStatus.toUpperCase()}\n`;
+            outputContainer.innerHTML += `  Database Name: "${renderData.databaseName}"\n`;
+            outputContainer.innerHTML += `  MongoDB Ping: ${renderData.ping ? renderData.ping.toUpperCase() : 'N/A'}\n`;
+            outputContainer.innerHTML += `  Message Count: ${renderData.messageCount}\n`;
+          } else {
+            updateBadge(renderStatusEl, 'error', '#FF6B6B', 'ERROR');
+            outputContainer.innerHTML += `  Render Server error: ${renderData.error || 'Unknown error'}\n`;
+          }
+        } catch (err) {
+          updateBadge(renderStatusEl, 'failed', '#FF6B6B', 'OFFLINE');
+          outputContainer.innerHTML += `  Render Server failed: ${err.name === 'AbortError' ? 'Timeout (Cold Start takes up to 50s)' : err.message}\n`;
+          outputContainer.innerHTML += `  💡 Tip: Render free-tier spins down after 15 mins of inactivity. If this timed out, give Render 1 minute to wake up and try again!\n`;
+        }
+
+        outputContainer.innerHTML += '\nDiagnostics complete.';
+        outputContainer.scrollTop = outputContainer.scrollHeight;
+
+        btnTest.disabled = false;
+        btnTest.innerHTML = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          Run Diagnostics
+        `;
       });
     }
 

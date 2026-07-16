@@ -116,6 +116,57 @@ function saveToLocalFile(filePath: string, data: any) {
   }
 }
 
+// API GET endpoint to test database connectivity
+app.get("/api/test-db", async (req, res) => {
+  try {
+    const readyState = mongoose.connection.readyState;
+    const states = ["disconnected", "connected", "connecting", "disconnecting"];
+    
+    const isDbConfigured = !!mongoUri;
+    let pingSuccess = false;
+    let messageCount = 0;
+    
+    // Auto-connect if not connected
+    if (mongoose.connection.readyState !== 1 && isDbConfigured) {
+      try {
+        await connectMongoDB();
+      } catch (err) {
+        console.warn("Attempted DB reconnect during diagnostics failed:", err);
+      }
+    }
+    
+    const activeState = mongoose.connection.readyState;
+    const activeStatusString = states[activeState] || "unknown";
+    
+    if (activeState === 1) {
+      try {
+        await mongoose.connection.db.admin().ping();
+        pingSuccess = true;
+        messageCount = await SayHello.countDocuments().catch(() => 0);
+      } catch (pingErr) {
+        console.error("Database ping/query failed:", pingErr);
+      }
+    }
+    
+    return res.status(200).json({
+      success: true,
+      configured: isDbConfigured,
+      connectionStatus: activeStatusString,
+      readyState: activeState,
+      ping: pingSuccess ? "success" : "failed",
+      databaseName: mongoose.connection.name || "none",
+      messageCount: messageCount,
+      environment: process.env.NODE_ENV || "development",
+      timestamp: new Date().toISOString()
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      success: false,
+      error: err.message || "Unknown error during diagnostics"
+    });
+  }
+});
+
 // API POST endpoint to save contact form submissions
 app.post("/api/contact", async (req, res) => {
   try {
