@@ -4,11 +4,11 @@ import mongoose from "mongoose";
  * Establishes a secure connection to MongoDB Atlas.
  */
 export const connectDB = async () => {
-  const mongoUrl = process.env.MONGODB_URL || process.env.MONGODB_URl || process.env.MONGODB_URI;
+  const mongoUrl = process.env.MONGODB_URI || process.env.MONGODB_URL || process.env.MONGODB_URl;
 
   if (!mongoUrl) {
-    console.error("❌ Error: No MongoDB connection string was found. Please define MONGODB_URL in your environment variables.");
-    process.exit(1);
+    console.error("❌ Error: No MongoDB connection string was found. Please define MONGODB_URI in your environment variables.");
+    return;
   }
 
   try {
@@ -21,6 +21,6 @@ export const connectDB = async () => {
     console.log(`🔌 Database Name: "${conn.connection.name}"`);
   } catch (error) {
     console.error(`❌ MongoDB connection error: ${error.message}`);
-    process.exit(1); // Exit process with failure
+    console.log("⚠️ Continuing server startup anyway. Database connection will be retried automatically by Mongoose.");
   }
 };

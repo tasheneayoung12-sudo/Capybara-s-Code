@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 // MongoDB Connection Logic
-const rawUri = process.env.MONGODB_URL || process.env.MONGODB_URl || process.env.MONGODB_URI || "";
+const rawUri = process.env.MONGODB_URI || process.env.MONGODB_URL || process.env.MONGODB_URl || "";
 
 function cleanMongoUri(uri: string): string {
   if (!uri) return "";
@@ -40,7 +40,7 @@ let connectionPromise: Promise<any> | null = null;
 
 async function connectMongoDB() {
   if (!mongoUri) {
-    console.warn("⚠️ WARNING: MONGODB_URL environment variable is not defined! Submissions cannot be saved to MongoDB Atlas.");
+    console.warn("⚠️ WARNING: MONGODB_URI environment variable is not defined! Submissions cannot be saved to MongoDB Atlas.");
     return null;
   }
   
