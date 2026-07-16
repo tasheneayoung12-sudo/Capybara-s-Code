@@ -4,10 +4,10 @@ import mongoose from "mongoose";
  * Establishes a secure connection to MongoDB Atlas.
  */
 export const connectDB = async () => {
-  const mongoUrl = process.env.MONGODB_URL || process.env.MONGODB_URI || process.env.MONGO_URI;
+  const mongoUrl = process.env.MONGODB_URL || process.env.MONGODB_URl || process.env.MONGODB_URI;
 
   if (!mongoUrl) {
-    console.error("❌ Error: No MongoDB connection string was found. Please define MONGODB_URL, MONGODB_URI, or MONGO_URI in your environment variables.");
+    console.error("❌ Error: No MongoDB connection string was found. Please define MONGODB_URL in your environment variables.");
     process.exit(1);
   }
 

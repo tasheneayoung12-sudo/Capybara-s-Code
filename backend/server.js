@@ -30,7 +30,7 @@ app.use(helmet());
 // In production, configure this to ONLY accept requests from your frontend URL (e.g., GitHub Pages)
 const corsOptions = {
   origin: process.env.NODE_ENV === "production" 
-    ? [/\.github\.io$/, "https://tasheneayoung.github.io"] // Replace with your actual frontend domain
+    ? [/\.github\.io$/, "https://tasheneayoung.github.io", /run\.app$/] // Allow GitHub Pages and AI Studio previews
     : "*", // Allow all origins in development
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],

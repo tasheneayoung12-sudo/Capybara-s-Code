@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 // MongoDB Connection Logic
-const rawUri = process.env.MONGODB_URL || process.env.MONGODB_URI || process.env.MONGO_URI || "";
+const rawUri = process.env.MONGODB_URL || process.env.MONGODB_URl || process.env.MONGODB_URI || "";
 
 function cleanMongoUri(uri: string): string {
   if (!uri) return "";
