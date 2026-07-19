@@ -414,7 +414,8 @@
       if (currentHost === 'localhost' || currentHost === '127.0.0.1' || currentHost.includes('ais-dev-') || currentHost.includes('ais-pre-')) {
         return '';
       }
-      return PRODUCTION_BACKEND_URL;
+      // Trim any trailing slash to prevent malformed double-slash URL queries (e.g. //api/contact)
+      return PRODUCTION_BACKEND_URL.replace(/\/$/, "");
     }
 
     document.getElementById('contact-form').addEventListener('submit', function(e) {
@@ -682,13 +683,14 @@
 
         // 2. Test Render Live (PRODUCTION_BACKEND_URL + "/api/test-db")
         try {
-          outputContainer.innerHTML += `> GET ${PRODUCTION_BACKEND_URL}/api/test-db (Render)...\n`;
+          const cleanRenderUrl = PRODUCTION_BACKEND_URL.replace(/\/$/, "");
+          outputContainer.innerHTML += `> GET ${cleanRenderUrl}/api/test-db (Render)...\n`;
           
           // Use AbortController for 12 second timeout on Render's cold start
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 12000);
 
-          const renderResponse = await fetch(PRODUCTION_BACKEND_URL + '/api/test-db', { 
+          const renderResponse = await fetch(cleanRenderUrl + '/api/test-db', { 
             headers: { 'Accept': 'application/json' },
             signal: controller.signal
           });
