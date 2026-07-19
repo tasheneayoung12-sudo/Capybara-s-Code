@@ -403,7 +403,7 @@
   <script>
     // === CONFIGURATION ===
     // If you host your backend server on a platform like Render or Railway, paste its URL here:
-    const PRODUCTION_BACKEND_URL = "https://capybara-s-code.onrender.com";
+    const PRODUCTION_BACKEND_URL = "https://www.gothtechies.net";
     // =====================
 
     // Automatically determine backend base URL.
@@ -411,7 +411,14 @@
     // If running on GitHub Pages, use the configured live production backend URL.
     function getApiBaseUrl() {
       const currentHost = window.location.hostname;
-      if (currentHost === 'localhost' || currentHost === '127.0.0.1' || currentHost.includes('ais-dev-') || currentHost.includes('ais-pre-')) {
+      if (
+        currentHost === 'localhost' || 
+        currentHost === '127.0.0.1' || 
+        currentHost.includes('ais-dev-') || 
+        currentHost.includes('ais-pre-') ||
+        currentHost.includes('onrender.com') ||
+        currentHost.includes('gothtechies.net')
+      ) {
         return '';
       }
       // Trim any trailing slash to prevent malformed double-slash URL queries (e.g. //api/contact)
